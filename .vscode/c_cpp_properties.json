@@ -1,16 +1,16 @@
 {
     "configurations": [
         {
-            "name": "Win32",
+            "name": "linux-x64",
             "includePath": [
                 "${workspaceFolder}/**",
-                "/home/chenjiuning/miniconda3/lib/python3.10/site-packages/halide/include"
+                "/home/jc/miniconda3/envs/halide/lib/python3.13/site-packages/halide/include"
             ],
             "defines": [],
-            "compilerPath": "cl.exe",
+            "compilerPath": "/usr/bin/g++",
             "cStandard": "c11",
             "cppStandard": "c++17",
-            "intelliSenseMode": "windows-msvc-x64"
+            "intelliSenseMode": "linux-gcc-x64"
         }
     ],
     "version": 4

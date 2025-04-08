@@ -1,18 +1,18 @@
 {
-    "version": 2,
-    "configurePresets": [
-      {
-        "name": "linux-x64",
-        "generator": "Ninja",
-        "binaryDir": "${sourceDir}/build/linux-x64"
-      },
-      {
-        "name": "windows-x64",
-        "generator": "Visual Studio 17 2022",
-        "binaryDir": "${sourceDir}/build/windows-x64",
-        "cacheVariables": {
-          "CMAKE_GENERATOR_PLATFORM": "x64"
-        }
+  "version": 2,
+  "configurePresets": [
+    {
+      "name": "linux-x64",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/linux-x64"
+    },
+    {
+      "name": "windows-x64",
+      "generator": "Visual Studio 17 2022",
+      "binaryDir": "${sourceDir}/build/windows-x64",
+      "cacheVariables": {
+        "CMAKE_GENERATOR_PLATFORM": "x64"
       }
-    ]
-  }
+    }
+  ]
+}

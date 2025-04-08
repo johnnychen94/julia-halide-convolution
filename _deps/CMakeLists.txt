@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.28)
+cmake_minimum_required(VERSION 3.19)
 project(libconv)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -26,13 +26,24 @@ if(WIN32)
 endif()
 set_target_properties(libconv PROPERTIES C_VISIBILITY_PRESET hidden)
 
+get_target_property(HALIDE_DLL_PATH Halide::Halide LOCATION)
+if (NOT HALIDE_DLL_PATH)
+    message(FATAL_ERROR "Halide DLL not found!")
+endif()
+
 if(WIN32)
-    # Windows *.dll should be placed in bin directory
+    # Windows *.dll needs to be placed in bin directory
     # https://docs.binarybuilder.org/stable/build_tips/#CMake-builds
     install(TARGETS libconv DESTINATION bin)
+    install(FILES "${HALIDE_DLL_PATH}" DESTINATION bin)
 else()
     install(TARGETS libconv DESTINATION lib)
+    install(FILES "${HALIDE_DLL_PATH}" DESTINATION lib)
 endif()
+set_target_properties(libconv PROPERTIES
+    INSTALL_RPATH "\$ORIGIN"
+    BUILD_WITH_INSTALL_RPATH ON
+)
 
 install(TARGETS libconv
         LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
