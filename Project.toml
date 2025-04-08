@@ -1,0 +1,7 @@
+name = "HLConv"
+uuid = "f61ebf39-2048-41b7-8c83-32a743150fdd"
+authors = ["陈久宁 <chenjiuning@tongyuan.cc>"]
+version = "0.1.0"
+
+[compat]
+julia="1.7"
