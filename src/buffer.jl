@@ -1,6 +1,6 @@
 module LibBuffer
 
-export Buffer, unsafe_wrap_buffer
+export Buffer, unsafe_wrap_buffer, HLTypes
 
 using ..libconv
 
@@ -27,10 +27,27 @@ mutable struct Buffer{T,N} <: AbstractArray{T,N}
     end
 end
 
+Buffer(n) = Buffer{Float64}(n)
+Buffer(sz::NTuple{N,Int}) where N = Buffer{Float64}(sz)
+
+Buffer{T}(n::Int) where T = Buffer{T}((n,))
+function Buffer{T}(sz::NTuple{N,Int}) where {T<:HLTypes,N}
+    if N >= 3
+        throw(ArgumentError("Unsupported dimension: $N"))
+    end
+    return unsafe_wrap_buffer(Array{T,N}(undef, sz))
+end
+
+Base.copy(b::Buffer{T,N}) where {T,N} = unsafe_wrap_buffer(collect(b))
+
 Base.size(b::Buffer{T,N}) where {T,N} = b.size
 Base.eltype(::Buffer{T,N}) where {T,N} = T
 Base.ndims(::Buffer{T,N}) where {T,N} = N
 Base.length(b::Buffer{T,N}) where {T,N} = prod(b.size)
+
+Base.convert(::Type{Buffer{T1,N}}, A::AbstractArray{T2,N}) where {T1,T2,N} = unsafe_wrap_buffer(T1.(A))
+Base.convert(::Type{Buffer{T,N}}, A::AbstractArray{T,N}) where {T,N} = unsafe_wrap_buffer(collect(A))
+Base.convert(::Type{Buffer{T,N}}, A::Array{T,N}) where {T,N} = unsafe_wrap_buffer(A)
 
 Base.IndexStyle(::Buffer) = IndexCartesian()
 
@@ -108,6 +125,8 @@ function unsafe_wrap_buffer(data::Array{T}) where {T<:HLTypes}
     throw(ArgumentError("Unsupported dimension: $(ndims(data))"))
 end
 
+unsafe_wrap_buffer(data::Array{T}) where {T<:Real} = unsafe_wrap_buffer(convert(Array{Float64}, data))
+
 function unsafe_wrap_buffer(data::Array{Float64,1})
     c = length(data)
     ptr = libconv.create_buffer_from_bytes_1d_f64(convert(Ptr{UInt8}, pointer(data)), c)
@@ -122,13 +141,13 @@ end
 
 function unsafe_wrap_buffer(data::Array{Float64,2})
     r, c = size(data)
-    ptr = libconv.create_buffer_from_bytes_2d_f64(convert(Ptr{UInt8}, pointer(data)), r, c)
+    ptr = libconv.create_buffer_from_bytes_2d_f64(convert(Ptr{UInt8}, pointer(data)), c, r)
     return Buffer{Float64,2}(ptr, (r, c))
 end
 
 function unsafe_wrap_buffer(data::Array{Float32,2})
     r, c = size(data)
-    ptr = libconv.create_buffer_from_bytes_2d_f32(convert(Ptr{UInt8}, pointer(data)), r, c)
+    ptr = libconv.create_buffer_from_bytes_2d_f32(convert(Ptr{UInt8}, pointer(data)), c, r)
     return Buffer{Float32,2}(ptr, (r, c))
 end
 

@@ -11,7 +11,7 @@ extern "C" {
 // This is a C-compatible way to represent a Halide::Buffer object
 // We can't use Halide::Buffer directly in C because it's a C++ class
 // and C doesn't understand C++ classes.
-struct CBuffer;
+typedef struct CBuffer CBuffer;
 
 LIBAPI CBuffer* create_buffer_from_bytes_1d_f64(unsigned char *data, int length);
 

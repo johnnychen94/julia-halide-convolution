@@ -1,56 +1,78 @@
-#include "Halide.h"
-#include <iostream>
-#include "buffer.h"
+// #include "Halide.h"
+// #include <iostream>
+// #include "buffer.h"
 
-using namespace Halide;
+// using namespace Halide;
 
-// Internal function that performs 1D convolution on 1D Buffers of type double.
-// Returns 0 on success or a nonzero error code on failure.
-int _conv1d(Halide::Buffer<double> output,
-            Halide::Buffer<double> input,
-            Halide::Buffer<double> kernel) {
+// template <typename T>
+// int _conv1d(Halide::Buffer<T> output, Halide::Buffer<T> X, Halide::Buffer<T> kernel) {
+//     // Check that X and kernel are one-dimensional.
+//     if (X.dimensions() != 1 || kernel.dimensions() != 1) {
+//         return 1;
+//     }
 
-    // Check that all buffers are one-dimensional.
-    if (input.dimensions() != 1 || kernel.dimensions() != 1 || output.dimensions() != 1) {
-        std::cerr << "Error: All buffers must be 1D." << std::endl;
-        return 2;
-    }
+//     // Get the size of X and kernel.
+//     int X_size = X.width();
+//     int kernel_size = kernel.width();
 
-    // Check size compatibility:
-    // For a valid convolution, output.width() must equal input.width() - kernel.width() + 1.
-    if (output.width() != input.width() - kernel.width() + 1) {
-        std::cerr << "Error: Output size (" << output.width()
-                  << ") does not match input width (" << input.width()
-                  << ") - kernel width (" << kernel.width() << ") + 1." << std::endl;
-        return 3;
-    }
+//     // Check if kernel size is odd
+//     if (kernel_size % 2 == 0) {
+//         std::cerr << "Kernel size must be odd for symmetric convolution." << std::endl;
+//         return 1;
+//     }
 
-    Var x;
-    Func conv("conv");
-    // Define a reduction domain over the kernel.
-    RDom r(0, kernel.width());
-    conv(x) = sum(input(x + r) * kernel(r));
+//     Var x("x"), k("k");
+//     Func conv("conv");
 
-    // Realize the function into the output buffer.
-    conv.realize(output);
+//     // Define the 1D convolution
+//     conv(x) = cast<T>(0);
+//     for (int i = 0; i < kernel_size; ++i) {
+//         // Cast both X(x + i - kernel_size / 2) and kernel(i) to Halide::Expr
+//         conv(x) += cast<T>(X(x + i - kernel_size / 2)) * cast<T>(kernel(i));
+//     }
 
-    return 0;
-}
+//     // Scheduling
+//     if (X_size > 16) {
+//         Var xi("xi");
+//         conv.vectorize(xi, 8).parallel(x);
+//     } else {
+//         if (X_size >= 8) {
+//             conv.vectorize(x, 8);
+//         }
+//     }
 
-extern "C" {
+//     // Realize the output
+//     conv.realize(output);
 
-int conv1d_f64(CBuffer *output, CBuffer *input, CBuffer *kernel) {
-    // Basic null pointer check.
-    if (!output || !input || !kernel) {
-        std::cerr << "Null pointer passed to conv1d." << std::endl;
-        return 1;
-    }
+//     return 0;
+// }
 
-    Halide::Buffer<double>* out_buf = reinterpret_cast<Halide::Buffer<double>*>(output);
-    Halide::Buffer<double>* in_buf = reinterpret_cast<Halide::Buffer<double>*>(input);
-    Halide::Buffer<double>* kern_buf = reinterpret_cast<Halide::Buffer<double>*>(kernel);
+// extern "C" {
 
-    return _conv1d(*out_buf, *in_buf, *kern_buf);
-}
+// int conv1d_f64(CBuffer *output, CBuffer *X, CBuffer *kernel) {
+//     if (!output || !X || !kernel) {
+//         std::cerr << "Null pointer passed to conv1d." << std::endl;
+//         return 1;
+//     }
 
-} // extern "C"
+//     Halide::Buffer<double>* out_buf = reinterpret_cast<Halide::Buffer<double>*>(output);
+//     Halide::Buffer<double>* X_buf = reinterpret_cast<Halide::Buffer<double>*>(X);
+//     Halide::Buffer<double>* kernel_buf = reinterpret_cast<Halide::Buffer<double>*>(kernel);
+
+//     return _conv1d(*out_buf, *X_buf, *kernel_buf);
+// }
+
+// int conv1d_f32(CBuffer *output, CBuffer *X, CBuffer *kernel) {
+//     if (!output || !X || !kernel) {
+//         std::cerr << "Null pointer passed to conv1d." << std::endl;
+//         return 1;
+//     }
+
+//     Halide::Buffer<float>* out_buf = reinterpret_cast<Halide::Buffer<float>*>(output);
+//     Halide::Buffer<float>* X_buf = reinterpret_cast<Halide::Buffer<float>*>(X);
+//     Halide::Buffer<float>* kernel_buf = reinterpret_cast<Halide::Buffer<float>*>(kernel);
+
+//     return _conv1d(*out_buf, *X_buf, *kernel_buf);
+// }
+
+// } // extern "C"
