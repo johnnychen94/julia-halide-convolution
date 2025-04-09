@@ -13,16 +13,6 @@ if (NOT Halide_FOUND)
     message(FATAL_ERROR "Halide not found!")
 endif()
 
-add_executable(gradient examples/gradient.cpp)
-target_include_directories(gradient PRIVATE
-    ${PROJECT_SOURCE_DIR}/include
-)
-target_link_libraries(gradient PRIVATE Halide::Halide pthread dl)
-set_target_properties(gradient PROPERTIES
-    INSTALL_RPATH "$ORIGIN/../lib"
-    BUILD_WITH_INSTALL_RPATH ON
-)
-
 add_library(libconv SHARED src/conv1d.cpp src/buffer.cpp src/gradient.cpp)
 target_include_directories(libconv PUBLIC
     ${PROJECT_SOURCE_DIR}/include
@@ -53,11 +43,6 @@ set_target_properties(libconv PROPERTIES
     INSTALL_RPATH "\$ORIGIN"
     BUILD_WITH_INSTALL_RPATH ON
 )
-
-install(TARGETS gradient
-        RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin
-        LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
-        ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 
 install(TARGETS libconv
         LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)

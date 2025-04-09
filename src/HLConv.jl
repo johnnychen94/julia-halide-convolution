@@ -1,11 +1,11 @@
 module HLConv
 
 module C
-    include("libconv/libconv.jl")
-    include("buffer.jl")
+	include("libconv/libconv.jl")
+	include("buffer.jl")
 
-    using .LibBuffer
-    export Buffer, unsafe_wrap_buffer
+	using .LibBuffer
+	export Buffer, unsafe_wrap_buffer
 end
 
 include("gradient.jl")
