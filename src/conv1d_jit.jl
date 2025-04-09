@@ -1,5 +1,5 @@
 function conv1d(X::AbstractArray, Y::AbstractArray)
-	out = similar(X, promote_type(eltype(X), eltype(Y)), _cal_conv_outsize(X, Y))
+	out = similar(X, promote_type(eltype(X), eltype(Y)), calculate_conv_out_spec(X, Y))
 	return conv1d!(out, X, Y)
 end
 
@@ -11,7 +11,7 @@ function conv1d!(out::AbstractArray, X::AbstractArray, Y::AbstractArray)
 end
 
 function conv1d!(out::Array, X::AbstractArray, Y::AbstractArray)
-	_cal_conv_outsize(X, Y) == length(out) || throw(ArgumentError("Output array size does not match the expected size."))
+	calculate_conv_out_spec(X, Y) == length(out) || throw(ArgumentError("Output array size does not match the expected size."))
 	if ndims(X) != 1 || ndims(Y) != 1
 		throw(ArgumentError("Both X and Y must be 1D arrays."))
 	end
@@ -25,14 +25,6 @@ function conv1d!(out::Array, X::AbstractArray, Y::AbstractArray)
 	# for dense array case, `out` and `convert(BT, out)` shares the same memory
 	# so we can return `out` directly
 	return out
-end
-
-function _cal_conv_outsize(X::AbstractArray{T}, K::AbstractArray{T}) where T <: C.HLTypes
-	if ndims(X) != 1 || ndims(K) != 1
-		throw(ArgumentError("Both X and K must be 1D arrays."))
-	end
-
-	return length(X) + length(K) - 1
 end
 
 function _conv1d!(out::C.Buffer{T}, X::C.Buffer{T}, K::C.Buffer{T}) where T <: C.HLTypes

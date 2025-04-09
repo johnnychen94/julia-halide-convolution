@@ -8,45 +8,22 @@ set(CMAKE_CXX_EXTENSIONS NO)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_SHARED_LIBRARY_PREFIX "")
 
+# Find Halide package
 find_package(Halide REQUIRED)
 if (NOT Halide_FOUND)
     message(FATAL_ERROR "Halide not found!")
 endif()
 
-add_library(libconv SHARED src/conv1d.cpp src/buffer.cpp src/gradient.cpp)
-target_include_directories(libconv PUBLIC
-    ${PROJECT_SOURCE_DIR}/include
-)
-target_link_libraries(libconv PRIVATE Halide::Halide pthread dl)
-target_compile_definitions(libconv PRIVATE LIBCONV_EXPORTS)
+# Generate directory for AOT compiled code
+set(AOT_GENERATED_DIR "${CMAKE_CURRENT_BINARY_DIR}/generated")
+file(MAKE_DIRECTORY "${AOT_GENERATED_DIR}")
 
-if(WIN32)
-    include(GenerateExportHeader)
-endif()
-set_target_properties(libconv PROPERTIES C_VISIBILITY_PRESET hidden)
-
-get_target_property(HALIDE_DLL_PATH Halide::Halide LOCATION)
-if (NOT HALIDE_DLL_PATH)
-    message(FATAL_ERROR "Halide DLL not found!")
-endif()
-
-if(WIN32)
-    # Windows *.dll needs to be placed in bin directory
-    # https://docs.binarybuilder.org/stable/build_tips/#CMake-builds
-    install(TARGETS libconv DESTINATION bin)
-    install(FILES "${HALIDE_DLL_PATH}" DESTINATION bin)
-else()
-    install(TARGETS libconv DESTINATION lib)
-    install(FILES "${HALIDE_DLL_PATH}" DESTINATION lib)
-endif()
-set_target_properties(libconv PROPERTIES
-    INSTALL_RPATH "\$ORIGIN"
-    BUILD_WITH_INSTALL_RPATH ON
-)
-
-install(TARGETS libconv
-        LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
+# Add subdirectories in the correct order
+# runtime first since others depend on it
+add_subdirectory(src/runtime)
+add_subdirectory(src/jit)
+add_subdirectory(src/aot)
 
 install(DIRECTORY include/
-        DESTINATION ${CMAKE_INSTALL_PREFIX}/include
-        FILES_MATCHING PATTERN "*.h")
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/include
+    FILES_MATCHING PATTERN "*.h")

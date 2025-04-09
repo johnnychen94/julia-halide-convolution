@@ -1,8 +1,9 @@
-#ifndef LIBCONV_H
-#define LIBCONV_H
+#ifndef LIBCONV_JIT_H
+#define LIBCONV_JIT_H
 
 #include "buffer.h"
 #include "common.h"
+#include "libconv_aot.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -19,4 +20,4 @@ extern "C"
 }
 #endif
 
-#endif // LIBCONV_H
+#endif // LIBCONV_JIT_H

@@ -2,7 +2,9 @@ module libconv
 
 using Libdl
 
-const libconv_handler = Ref{Ptr{Cvoid}}(C_NULL)
+const libconv_runtime_handler = Ref{Ptr{Cvoid}}(C_NULL)
+const libconv_jit_handler = Ref{Ptr{Cvoid}}(C_NULL)
+const libconv_aot_handler = Ref{Ptr{Cvoid}}(C_NULL)
 
 struct CBuffer end
 
@@ -13,13 +15,29 @@ const provider = Ref{String}("")
 const libdir_name = Sys.iswindows() ? "bin" : "lib"
 
 function load_local_libconv(libcvlib_dir)
-	local_libcv_path = normpath(joinpath(libcvlib_dir, libdir_name, "libconv.$(dlext)"))
-	if !isfile(local_libcv_path)
-		error("libcv not found at $local_libcv_path")
+	local_libconv_runtime_path = normpath(joinpath(libcvlib_dir, libdir_name, "libconv_runtime.$(dlext)"))
+	local_libconv_jit_path = normpath(joinpath(libcvlib_dir, libdir_name, "libconv_jit.$(dlext)"))
+	local_libconv_aot_path = normpath(joinpath(libcvlib_dir, libdir_name, "libconv_aot.$(dlext)"))
+	if !isfile(local_libconv_runtime_path)
+		error("libconv_runtime not found at $local_libconv_runtime_path")
 	else
-		@debug "Loading libcv from $local_libcv_path"
-		libconv_handler[] = dlopen(local_libcv_path)
-		@assert libconv_handler[] != C_NULL
+		@debug "Loading libconv_runtime from $local_libconv_runtime_path"
+		libconv_runtime_handler[] = dlopen(local_libconv_runtime_path)
+		@assert libconv_runtime_handler[] != C_NULL
+	end
+	if !isfile(local_libconv_jit_path)
+		error("libconv_jit not found at $local_libconv_jit_path")
+	else
+		@debug "Loading libconv_jit from $local_libconv_jit_path"
+		libconv_jit_handler[] = dlopen(local_libconv_jit_path)
+		@assert libconv_jit_handler[] != C_NULL
+	end
+	if !isfile(local_libconv_aot_path)
+		error("libconv_aot not found at $local_libconv_aot_path")
+	else
+		@debug "Loading libconv_aot from $local_libconv_aot_path"
+		libconv_aot_handler[] = dlopen(local_libconv_aot_path)
+		@assert libconv_aot_handler[] != C_NULL
 	end
 end
 
@@ -30,7 +48,7 @@ end
 
 function __init__()
 	libconv_dir = getenv(
-		"LIBCONV_LOCAL_LIBDIR", normpath(joinpath(@__DIR__, "..", "..", "install")),
+		"LIBCONV_LOCAL_LIBDIR", normpath(joinpath(@__DIR__, "..", "..", "dist")),
 	)
 	load_local_libconv(libconv_dir)
 end
