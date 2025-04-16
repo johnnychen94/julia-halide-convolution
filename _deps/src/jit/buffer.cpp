@@ -4,7 +4,6 @@
 
 extern "C"
 {
-
     CBuffer *create_buffer_from_bytes_1d_f64(unsigned char *data, int length)
     {
         try

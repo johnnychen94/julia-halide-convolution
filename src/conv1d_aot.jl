@@ -20,24 +20,24 @@ function conv1d_aot!(out::Array, X::AbstractArray, Y::AbstractArray)
 	end
 
 	BT = C.Buffer{eltype(out), 1}
-	_conv1d_aot!(convert(BT, out), convert(BT, X), convert(BT, Y))
+	_conv1d_aot!(convert(BT, X), convert(BT, Y), convert(BT, out))
 
 	# for dense array case, `out` and `convert(BT, out)` shares the same memory
 	# so we can return `out` directly
 	return out
 end
 
-function _conv1d_aot!(out::C.Buffer{T}, X::C.Buffer{T}, K::C.Buffer{T}) where T <: C.HLTypes
-	rst = __conv1d_aot!(out, X, K)
+function _conv1d_aot!(X::C.Buffer{T}, K::C.Buffer{T}, out::C.Buffer{T}) where T <: C.HLTypes
+	rst = __conv1d_aot!(X, K, out)
 	if rst != 0
 		throw(ArgumentError("Invalid input data."))
 	end
 	return out
 end
 
-@inline function __conv1d_aot!(out::C.Buffer{Float64}, X::C.Buffer{Float64}, K::C.Buffer{Float64})
-	C.libconv.conv1d_f64(out.ptr, X.ptr, K.ptr)
+@inline function __conv1d_aot!(X::C.Buffer{Float64}, K::C.Buffer{Float64}, out::C.Buffer{Float64})
+	C.libconv.conv1d_f64_aot(X.ptr, K.ptr, out.ptr)
 end
-@inline function __conv1d_aot!(out::C.Buffer{Float32}, X::C.Buffer{Float32}, K::C.Buffer{Float32})
-	C.libconv.conv1d_f32(out.ptr, X.ptr, K.ptr)
+@inline function __conv1d_aot!(X::C.Buffer{Float32}, K::C.Buffer{Float32}, out::C.Buffer{Float32})
+	C.libconv.conv1d_f32_aot(X.ptr, K.ptr, out.ptr)
 end

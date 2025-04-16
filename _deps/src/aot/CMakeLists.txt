@@ -14,7 +14,6 @@ target_include_directories(libconv_aot PUBLIC
 
 target_link_libraries(libconv_aot
     PRIVATE
-    libconv_runtime
     conv1d_f64_aot
     conv1d_f32_aot
 )

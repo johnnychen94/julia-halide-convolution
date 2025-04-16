@@ -9,8 +9,8 @@ extern "C"
 {
 #endif
 
-    LIBAPI int conv1d_f64_aot_wrapper(CBuffer *output, CBuffer *input, CBuffer *kernel);
-    LIBAPI int conv1d_f32_aot_wrapper(CBuffer *output, CBuffer *input, CBuffer *kernel);
+    LIBAPI int conv1d_f64_aot_wrapper(CBuffer *input, CBuffer *kernel, CBuffer *output);
+    LIBAPI int conv1d_f32_aot_wrapper(CBuffer *input, CBuffer *kernel, CBuffer *output);
 
 #ifdef __cplusplus
 }

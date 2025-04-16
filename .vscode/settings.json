@@ -1,11 +1,12 @@
 {
-    "editor.formatOnSave": true,
-    "[julia]": {
-        "editor.defaultFormatter": "0h7z.vscode-julia-format",
-        "editor.formatOnSave": true,
-    },
-    "[cpp]": {
-        "editor.defaultFormatter": "ms-vscode.cpptools"
-    },
-    "C_Cpp.autoAddFileAssociations": false,
+  "editor.formatOnSave": true,
+  "[julia]": {
+    "editor.defaultFormatter": "0h7z.vscode-julia-format",
+    "editor.formatOnSave": true
+  },
+  "[cpp]": {
+    "editor.defaultFormatter": "ms-vscode.cpptools"
+  },
+  "C_Cpp.autoAddFileAssociations": false,
+  "julia.environmentPath": "/home/chenjiuning/Documents/ai/julia-halide-convolution"
 }

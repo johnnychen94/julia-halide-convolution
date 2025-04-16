@@ -1,4 +1,5 @@
 add_library(libconv_jit SHARED
+    buffer.cpp
     conv1d.cpp
     gradient.cpp)
 
@@ -6,7 +7,6 @@ target_include_directories(libconv_jit PUBLIC
     ${PROJECT_SOURCE_DIR}/include)
 
 target_link_libraries(libconv_jit PRIVATE
-    libconv_runtime
     Halide::Halide
     pthread
     dl)

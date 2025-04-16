@@ -18,9 +18,6 @@ endif()
 set(AOT_GENERATED_DIR "${CMAKE_CURRENT_BINARY_DIR}/generated")
 file(MAKE_DIRECTORY "${AOT_GENERATED_DIR}")
 
-# Add subdirectories in the correct order
-# runtime first since others depend on it
-add_subdirectory(src/runtime)
 add_subdirectory(src/jit)
 add_subdirectory(src/aot)
 
