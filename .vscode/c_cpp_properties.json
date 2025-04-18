@@ -4,7 +4,9 @@
       "name": "linux-x64",
       "includePath": [
         "${workspaceFolder}/**",
-        "~/miniconda3/envs/halide/lib/python3.13/site-packages/halide/include"
+        "${workspaceFolder}/_deps/build/*/src/generators",
+        "${workspaceFolder}/_deps/include/",
+        "${env:CONDA_PREFIX}/lib/python*/site-packages/halide/include"
       ],
       "defines": [],
       "compilerPath": "/usr/bin/g++",

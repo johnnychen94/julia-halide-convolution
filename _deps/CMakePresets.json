@@ -4,14 +4,17 @@
     {
       "name": "linux-x64",
       "generator": "Ninja",
-      "binaryDir": "${sourceDir}/build/linux-x64"
+      "binaryDir": "${sourceDir}/build/linux-x64",
+      "cacheVariables": {
+        "AOT_VERBOSE": "OFF"
+      }
     },
     {
       "name": "windows-x64",
       "generator": "Visual Studio 17 2022",
       "binaryDir": "${sourceDir}/build/windows-x64",
       "cacheVariables": {
-        "CMAKE_GENERATOR_PLATFORM": "x64"
+        "AOT_VERBOSE": "OFF"
       }
     }
   ]

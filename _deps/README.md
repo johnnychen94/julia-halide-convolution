@@ -6,7 +6,7 @@
 
 基于 pip 安装 Halide 依赖：
 
-```
+```console
 pip install halide
 ```
 
@@ -37,3 +37,18 @@ Ptr{Nothing} @0x00007a739a3e3819
 ### Windows
 
 Windows 存在一些已知问题暂未解决
+
+## 高级配置
+
+可以修改 `CMakePresets.json` 中的参数来调整编译选项。
+
+| 参数 | 说明 | 默认值 |
+| --- | --- | --- |
+| `AOT_VERBOSE` | 是否在 AOT 编译阶段打印详细信息 | `OFF` |
+
+## VSCode 配置
+
+如果你不是使用 anaconda 提供的 Python 来安装 Halide 依赖，则需要手动配置 VSCode 的 `c_cpp_properties.json` 文件。
+
+安装 `halide` 后找到 Halide 的目录，并添加到 `c_cpp_properties.json` 的 `includePath` 中，
+从而确保编译器能够找到 Halide 的头文件和库文件。

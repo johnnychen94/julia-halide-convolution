@@ -1,14 +1,15 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-#if defined(_WIN32) || defined(_WIN64)
-#ifdef LIBCONV_EXPORTS
+#ifdef _WIN32
 #define LIBAPI __declspec(dllexport)
 #else
-#define LIBAPI __declspec(dllimport)
+#define LIBAPI __attribute__((__visibility__("default")))
 #endif
-#else
-#define LIBAPI __attribute__((visibility("default")))
-#endif
+
+using float32_t = float;
+using float64_t = double;
+
+static_assert(sizeof(float32_t) == 4, "float32 should be 32 bit size");
 
 #endif // COMMON_H
