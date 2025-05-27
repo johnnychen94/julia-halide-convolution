@@ -14,7 +14,7 @@ The benchmark time is in μs.
 
 ### Float64
 
-| size | MATLAB | TyHalideConv |
+| size | MATLAB | HLConv |
 |------|--------|------|
 | 32  | 4.63   | 0.57 |
 | 64  | 8.64   | 0.83 |
@@ -30,7 +30,7 @@ The benchmark time is in μs.
 
 ### Float32
 
-| size  | MATLAB | TyHalideConv |
+| size  | MATLAB | HLConv |
 |------|--------|------|
 | 32  | 0.95   | 0.51 |
 | 64  | 1.43   | 0.71 |
@@ -46,7 +46,7 @@ The benchmark time is in μs.
 
 ### UInt8
 
-| size | MATLAB | TyHalideConv |
+| size | MATLAB | HLConv |
 |------|--------|------|
 | 32  | 4.82   | 0.53 |
 | 64  | 8.67   | 0.70 |
